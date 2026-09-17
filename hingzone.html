@@ -1,1 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>昇辰鳩賦 - Cyberpunk Grid</title>
+  <style>
+    /* =========================================================
+       1. GLOBAL RESET & CYBERPUNK VARIABLES
+       ========================================================= */
+    :root {
+      --bg-dark: #07090d;
+      --cyber-cyan: #00f0ff;
+      --cyber-yellow: #ffe600;
+      --cyber-green: #00ff66;
+      --text-main: #f0f6fc;
+    }
 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Starfield Background Canvas */
+    #starfield-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Main Page Wrapper */
+    .page-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Header Styling */
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      color: var(--cyber-cyan);
+      text-transform: uppercase;
+      letter-spacing: 6px;
+      text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+    }
+
+    .page-header p {
+      font-size: 1rem;
+      color: var(--cyber-yellow);
+      letter-spacing: 3px;
+      margin-top: 10px;
+    }
+
+    /* =========================================================
+       2. 3x3 GRID LAYOUT & CYBER CARDS
+       ========================================================= */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      width: 100%;
+    }
+
+    .cyber-card {
+      position: relative;
+      background: rgba(7, 15, 25, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      border-radius: 4px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 220px;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      clip-path: polygon(
+        0 0, 
+        calc(100% - 15px) 0, 
+        100% 15px, 
+        100% 100%, 
+        15px 100%, 
+        0 calc(100% - 15px)
+      );
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
+    }
+
+    .cyber-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyber-cyan), var(--cyber-yellow), transparent);
+    }
+
+    .cyber-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--cyber-yellow);
+      box-shadow: 0 0 25px rgba(255, 230, 0, 0.25);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      color: var(--cyber-cyan);
+      font-size: 1.1rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .card-num {
+      color: var(--cyber-yellow);
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      background: rgba(255, 230, 0, 0.1);
+      padding: 2px 6px;
+      border: 1px solid rgba(255, 230, 0, 0.3);
+    }
+
+    .card-body {
+      color: var(--text-main);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      letter-spacing: 0.5px;
+      flex-grow: 1;
+    }
+
+    /* Back Button Component */
+    .back-btn-container {
+      margin-top: 50px;
+    }
+
+    .cyber-btn {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--cyber-cyan);
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid var(--cyber-cyan);
+      padding: 12px 30px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      transition: all 0.3s ease;
+      clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    }
+
+    .cyber-btn:hover {
+      background: var(--cyber-cyan);
+      color: #000000;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 900px) {
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+
+      .page-container {
+        padding: 40px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Starfield -->
+  <canvas id="starfield-canvas"></canvas>
+
+  <main class="page-container">
+    <header class="page-header">
+      <h1>昇辰鳩賦</h1>
+      <p>Cyberpunk Database // Grid Node Matrix</p>
+    </header>
+
+    <!-- 3x3 Grid Section -->
+    <div class="grid-container">
+      
+      <!-- Box 1 -->
+      <div class="cyber-card">
+        <div class="card-header">
+          <div class="card-title">第一篇 // 篇章</div>
+          <div class="card-num">SEC 01</div>
+        </div>
+        <div class="card-body">
+          在這裡輸入第一格的內容文字。可以填寫任何句子、紀錄或想法。
+        </div>
+      </div>
+
+      <!-- Box 2 -->
+      <div class="cyber-card">
+        <div class="card-header">
+          <div class="card-title">第二篇 // 篇章</div>
+          <div class="card-num">SEC 02</div>
+        </div>
+        <div class="card-body">
+          在這裡輸入第二格的內容文字。
+        </div>
+      </div>
+
+      <!-- Box 3 -->
+      <div class="cyber-card">
+        <div class="card-header">
+          <div class="card-title">第三篇 // 篇章</div>
+          <div class="card-num">SEC 03</div>
+        </div>
+        <div class="card-body">
+          在這裡輸入第三格的內容文字。
+        </div>
+      </div>
+
+      <!-- Box 4 -->
+      <div class="cyber-card">
+        <div class="card-header">
+          <div class="card-title">第四篇 // 篇章</div>
+          <div class="card-num">SEC 04</div>
+        </div>
+        <div class="card-body">
+          在這裡輸入第四格的內容文字。
+        </div>
+      </div>
+
+      <!-- Box 5 -->
+      <div class="cyber-card">
+        <div class="card-header">
+          <div class="card-title">第五篇 // 篇章</div>
+          <div class="card-num">SEC 05</div>
+        </div>
+        <div class="card-body">
+          在這裡輸入第五格的內容文字。
+        </div>
+      </div>
+
+      <!-- Box 6 -->
+      <div class="cyber-card">
+        <div class="card-header">
+          <div class="card-title">第六篇 // 篇章</div>
+          <div class="card-num">SEC 06</div>
+        </div>
+        <div class="card-body">
+          在這裡輸入第六格的內容文字。
+        </div>
+      </div>
+
+      <!-- Box 7 -->
+      <div class="cyber-card">
+        <div class="card-header">
+          <div class="card-title">第七篇 // 篇章</div>
+          <div class="card-num">SEC 07</div>
+        </div>
+        <div class="card-body">
+          在這裡輸入第七格的內容文字。
+        </div>
+      </div>
+
+      <!-- Box 8 -->
+      <div class="cyber-card">
+        <div class="card-header">
+          <div class="card-title">第八篇 // 篇章</div>
+          <div class="card-num">SEC 08</div>
+        </div>
+        <div class="card-body">
+          在這裡輸入第八格的內容文字。
+        </div>
+      </div>
+
+      <!-- Box 9 -->
+      <div class="cyber-card">
+        <div class="card-header">
+          <div class="card-title">第九篇 // 篇章</div>
+          <div class="card-num">SEC 09</div>
+        </div>
+        <div class="card-body">
+          在這裡輸入第九格的內容文字。
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Return Link -->
+    <div class="back-btn-container">
+      <a href="index.html" class="cyber-btn">&lt; 返回主頁</a>
+    </div>
+  </main>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // Animated Starfield Canvas
+      const canvas = document.getElementById('starfield-canvas');
+      const ctx = canvas.getContext('2d');
+
+      let stars = [];
+      const starCount = 120;
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function initStars() {
+        stars = [];
+        for (let i = 0; i < starCount; i++) {
+          stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 0.5,
+            speedX: (Math.random() - 0.5) * 0.4,
+            speedY: Math.random() * 0.6 + 0.2,
+            color: Math.random() > 0.3 ? '#00f0ff' : '#ffe600',
+            alpha: Math.random()
+          });
+        }
+      }
+
+      function animateStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < stars.length; i++) {
+          let s = stars[i];
+          s.x += s.speedX;
+          s.y += s.speedY;
+
+          if (s.y > canvas.height) {
+            s.y = 0;
+            s.x = Math.random() * canvas.width;
+          }
+          if (s.x < 0) s.x = canvas.width;
+          if (s.x > canvas.width) s.x = 0;
+
+          ctx.save();
+          ctx.globalAlpha = s.alpha;
+          ctx.fillStyle = s.color;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        requestAnimationFrame(animateStars);
+      }
+
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        initStars();
+      });
+
+      resizeCanvas();
+      initStars();
+      animateStars();
+    });
+  </script>
+
+</body>
+</html>
