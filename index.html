@@ -124,6 +124,7 @@
       position: relative;
     }
 
+    /* MODIFIED: Added display: block and text-decoration: none for links */
     .slant-panel {
       flex: 1;
       height: 100%;
@@ -134,6 +135,8 @@
       border-right: 2px solid var(--cyber-cyan);
       box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.2);
       background: #000;
+      display: block;
+      text-decoration: none;
     }
 
     .slant-panel:first-child {
@@ -168,108 +171,241 @@
       filter: grayscale(0%) brightness(1.1);
     }
 
+    /* MODIFIED: Responsive layout and dynamic font sizing for all devices */
     .panel-caption {
       position: absolute;
       bottom: 20px;
-      left: 20%;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 6px 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.75);
+      padding: 6px 14px;
       border-left: 3px solid var(--cyber-yellow);
       color: var(--cyber-yellow);
       font-weight: bold;
       letter-spacing: 2px;
       pointer-events: none;
+      white-space: nowrap;
+      font-size: clamp(0.7rem, 2vw, 1rem);
+      max-width: 90%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
     /* =========================================================
-       4. SECTION 2: 3D CYBERPUNK ROTATING CUBE
+       4. NEW SECTION 2: UNIVERSAL STARFIELD & CYBER TEXT BOX
        ========================================================= */
     .section-two {
       width: 100vw;
       min-height: 100vh;
-      background: radial-gradient(circle at center, #0e1520 0%, #03060a 100%);
+      position: relative;
+      background: #020509;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      perspective: 1200px;
-      position: relative;
+      overflow: hidden;
+      padding: 40px 20px;
       border-top: 1px solid rgba(0, 240, 255, 0.2);
       border-bottom: 1px solid rgba(0, 240, 255, 0.2);
     }
 
-    .cube-scene {
-      width: 260px;
-      height: 260px;
-      position: relative;
-      transform-style: preserve-3d;
-      animation: rotateCube 16s linear infinite;
-    }
-
-    @keyframes rotateCube {
-      0% {
-        transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
-      }
-      100% {
-        transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
-      }
-    }
-
-    .cube-face {
+    #starfield-canvas {
       position: absolute;
-      width: 260px;
-      height: 260px;
-      background: rgba(4, 15, 25, 0.75);
-      border: 2px solid var(--cyber-cyan);
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.3), inset 0 0 15px rgba(0, 240, 255, 0.2);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: monospace;
-      color: var(--cyber-cyan);
-      text-shadow: 0 0 8px var(--cyber-cyan);
-      backdrop-filter: blur(4px);
-    }
-
-    .cube-face::after {
-      content: '';
-      position: absolute;
-      inset: 8px;
-      border: 1px dashed rgba(255, 230, 0, 0.4);
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
       pointer-events: none;
     }
 
-    .face-front  { transform: rotateY(0deg) translateZ(130px); }
-    .face-back   { transform: rotateY(180deg) translateZ(130px); }
-    .face-right  { transform: rotateY(90deg) translateZ(130px); }
-    .face-left   { transform: rotateY(-90deg) translateZ(130px); }
-    .face-top    { transform: rotateX(90deg) translateZ(130px); }
-    .face-bottom { transform: rotateX(-90deg) translateZ(130px); }
-
-    .cube-face h3 {
-      font-size: 1.3rem;
-      letter-spacing: 2px;
-      margin-bottom: 4px;
-      color: #fff;
+    .cyber-textbox-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 850px;
+      background: rgba(7, 15, 25, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      border-radius: 4px;
+      padding: 40px;
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.15),
+                  inset 0 0 20px rgba(0, 240, 255, 0.08);
+      clip-path: polygon(
+        0 0, 
+        calc(100% - 20px) 0, 
+        100% 20px, 
+        100% 100%, 
+        20px 100%, 
+        0 calc(100% - 20px)
+      );
     }
 
-    .cube-face p {
-      font-size: 0.8rem;
+    .cyber-textbox-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyber-cyan), var(--cyber-yellow), transparent);
+    }
+
+    .cyber-textbox-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+    }
+
+    .cyber-textbox-title {
+      color: var(--cyber-cyan);
+      font-size: 1.5rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+    }
+
+    .cyber-textbox-tag {
       color: var(--cyber-yellow);
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      background: rgba(255, 230, 0, 0.1);
+      padding: 4px 8px;
+      border: 1px solid rgba(255, 230, 0, 0.3);
+    }
+
+    .cyber-textbox-content {
+      color: var(--text-main);
+      font-size: 1.05rem;
+      line-height: 1.8;
       letter-spacing: 1px;
     }
 
+    /* Editable or customizable inner content area */
+    .cyber-textbox-content textarea {
+      width: 100%;
+      min-height: 200px;
+      background: transparent;
+      border: 1px dashed rgba(0, 240, 255, 0.3);
+      color: var(--text-main);
+      padding: 16px;
+      font-size: 1rem;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .cyber-textbox-content textarea:focus {
+      border-color: var(--cyber-cyan);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+
     /* =========================================================
-       5. SECTION 3: PURE WHITE SECTION
+       5. NEW SECTION 3: FULLSCREEN IMAGE D.JPG & FOOTER GALLERY
        ========================================================= */
     .section-three {
       width: 100vw;
       min-height: 100vh;
-      background-color: #ffffff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      background-image: url('D.jpg');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #000000;
+      padding: 40px 20px;
+    }
+
+    .section-three-title {
+      z-index: 2;
+      text-align: center;
+      color: var(--cyber-cyan);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+      margin-top: 20px;
+    }
+
+    .gallery-footer {
+      width: 100%;
+      max-width: 1000px;
       display: flex;
       justify-content: center;
       align-items: center;
+      gap: 15px;
+      z-index: 2;
+      flex-wrap: wrap;
+      background: rgba(2, 5, 9, 0.7);
+      padding: 15px;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+    }
+
+    .footer-box {
+      width: 120px;
+      height: 80px;
+      position: relative;
+      border: 2px solid var(--cyber-cyan);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      background: #000;
+    }
+
+    .footer-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      filter: brightness(0.8);
+    }
+
+    .footer-box:hover {
+      transform: translateY(-5px);
+      border-color: var(--cyber-yellow);
+      box-shadow: 0 0 15px rgba(255, 230, 0, 0.4);
+    }
+
+    .footer-box:hover img {
+      transform: scale(1.1);
+      filter: brightness(1.1);
+    }
+
+    .footer-box-label {
+      position: absolute;
+      bottom: 0;
+      inset-x: 0;
+      background: rgba(0, 0, 0, 0.8);
+      color: var(--cyber-yellow);
+      font-size: 0.7rem;
+      text-align: center;
+      padding: 2px 0;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    /* Media query adjustments for mobile screens */
+    @media (max-width: 600px) {
+      .panel-caption {
+        bottom: 12px;
+        padding: 4px 8px;
+        letter-spacing: 1px;
+      }
+
+      .footer-box {
+        width: 65px;
+        height: 55px;
+      }
+
+      .footer-box-label {
+        font-size: 0.55rem;
+      }
     }
   </style>
 </head>
@@ -280,66 +416,79 @@
   </div>
 
   <main>
-    <section class="section-one">
+<section class="section-one">
       <div class="section-header">
-        <h1>Cyber Division</h1>
-        <p>Tactical visual database // Sector view</p>
+        <h1>昇辰的多重宇宙</h1>
+        <p>出世無物帶來，死也無物帶走。匆匆一生，何懼之有？</p>
       </div>
 
       <div class="slanted-container">
-        <div class="slant-panel">
+        <a href="hingzone.html" class="slant-panel">
           <div class="image-wrapper">
-            <img src="A.jpg" alt="A" onerror="this.src='https://picsum.photos/800/1000?random=1'" />
+            <img src="A1.jpg" alt="A" onerror="this.src='https://picsum.photos/800/1000?random=1'" />
           </div>
-          <div class="panel-caption">TARGET // A</div>
-        </div>
+          <div class="panel-caption">昇辰賦</div>
+        </a>
 
-        <div class="slant-panel">
+        <a href="events.html" class="slant-panel">
           <div class="image-wrapper">
-            <img src="B.jpg" alt="B" onerror="this.src='https://picsum.photos/800/1000?random=2'" />
+            <img src="A2.jpg" alt="B" onerror="this.src='https://picsum.photos/800/1000?random=2'" />
           </div>
-          <div class="panel-caption">TARGET // B</div>
-        </div>
+          <div class="panel-caption">活動流</div>
+        </a>
 
-        <div class="slant-panel">
+        <a href="null.html" class="slant-panel">
           <div class="image-wrapper">
-            <img src="C.jpg" alt="C" onerror="this.src='https://picsum.photos/800/1000?random=3'" />
+            <img src="A3.jpg" alt="C" onerror="this.src='https://picsum.photos/800/1000?random=3'" />
           </div>
-          <div class="panel-caption">TARGET // C</div>
-        </div>
+          <div class="panel-caption">無一物</div>
+        </a>
       </div>
     </section>
 
+    <!-- NEW SECTION TWO -->
     <section class="section-two">
-      <div class="cube-scene">
-        <div class="cube-face face-front">
-          <h3>SYSTEM</h3>
-          <p>[ONLINE]</p>
+      <canvas id="starfield-canvas"></canvas>
+      <div class="cyber-textbox-container">
+        <div class="cyber-textbox-header">
+          <div class="cyber-textbox-title">心事板</div>
+          <div class="cyber-textbox-tag">STATUS: ACTIVE</div>
         </div>
-        <div class="cube-face face-back">
-          <h3>NODE</h3>
-          <p>0x889F</p>
-        </div>
-        <div class="cube-face face-right">
-          <h3>DATA</h3>
-          <p>STREAM</p>
-        </div>
-        <div class="cube-face face-left">
-          <h3>CORE</h3>
-          <p>STABLE</p>
-        </div>
-        <div class="cube-face face-top">
-          <h3>SECTOR</h3>
-          <p>ALPHA</p>
-        </div>
-        <div class="cube-face face-bottom">
-          <h3>CYBER</h3>
-          <p>MATRIX</p>
+        <div class="cyber-textbox-content">
+          <textarea placeholder="留下你的心聲和煩惱，我們願意傾聽"></textarea>
         </div>
       </div>
     </section>
 
-    <section class="section-three"></section>
+    <!-- NEW SECTION THREE -->
+    <section class="section-three">
+      <div class="section-three-title">
+        <h2>旅遊集</h2>
+      </div>
+
+      <div class="gallery-footer">
+        <a href="E1.jpg" target="_blank" class="footer-box">
+          <img src="E1.jpg" alt="E1" onerror="this.src='https://picsum.photos/200/150?random=11'" />
+          <div class="footer-box-label">春</div>
+        </a>
+        <a href="E2.jpg" target="_blank" class="footer-box">
+          <img src="E2.jpg" alt="E2" onerror="this.src='https://picsum.photos/200/150?random=12'" />
+          <div class="footer-box-label">夏</div>
+        </a>
+        <a href="E3.jpg" target="_blank" class="footer-box">
+          <img src="E3.jpg" alt="E3" onerror="this.src='https://picsum.photos/200/150?random=13'" />
+          <div class="footer-box-label">秋</div>
+        </a>
+        <a href="E4.jpg" target="_blank" class="footer-box">
+          <img src="E4.jpg" alt="E4" onerror="this.src='https://picsum.photos/200/150?random=14'" />
+          <div class="footer-box-label">冬</div>
+        </a>
+        <a href="E5.jpg" target="_blank" class="footer-box">
+          <img src="E5.jpg" alt="E5" onerror="this.src='https://picsum.photos/200/150?random=15'" />
+          <div class="footer-box-label">風</div>
+        </a>
+      </div>
+    </section>
   </main>
 
   <script>
@@ -366,6 +515,69 @@
         intro.classList.add('hide-intro');
         startMusic();
       }, 3200);
+
+      // Starfield Animation Canvas for Section 2
+      const canvas = document.getElementById('starfield-canvas');
+      const ctx = canvas.getContext('2d');
+
+      let stars = [];
+      const starCount = 150;
+
+      function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+      }
+
+      function initStars() {
+        stars = [];
+        for (let i = 0; i < starCount; i++) {
+          stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 0.5,
+            speedX: (Math.random() - 0.5) * 0.5,
+            speedY: Math.random() * 0.8 + 0.2,
+            color: Math.random() > 0.3 ? '#00f0ff' : '#ffe600',
+            alpha: Math.random()
+          });
+        }
+      }
+
+      function animateStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < stars.length; i++) {
+          let s = stars[i];
+          s.x += s.speedX;
+          s.y += s.speedY;
+
+          if (s.y > canvas.height) {
+            s.y = 0;
+            s.x = Math.random() * canvas.width;
+          }
+          if (s.x < 0) s.x = canvas.width;
+          if (s.x > canvas.width) s.x = 0;
+
+          ctx.save();
+          ctx.globalAlpha = s.alpha;
+          ctx.fillStyle = s.color;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        requestAnimationFrame(animateStars);
+      }
+
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        initStars();
+      });
+
+      resizeCanvas();
+      initStars();
+      animateStars();
     });
   </script>
 <!-- Background Audio -->
