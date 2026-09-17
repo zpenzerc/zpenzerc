@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyberpunk Web Experience</title>
+  <style>
+    /* =========================================================
+       1. GLOBAL RESET & CYBERPUNK VARIABLES (No Purple/No Pink)
+       ========================================================= */
+    :root {
+      --bg-dark: #07090d;
+      --cyber-cyan: #00f0ff;
+      --cyber-yellow: #ffe600;
+      --cyber-green: #00ff66;
+      --text-main: #f0f6fc;
+      --slant-angle: 8deg;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    /* =========================================================
+       2. INTRO OVERLAY ("別把真心錯付")
+       ========================================================= */
+    #intro-screen {
+      position: fixed;
+      inset: 0;
+      background-color: #000000;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    .intro-text {
+      color: #ffffff;
+      font-size: 2.5rem;
+      font-weight: 300;
+      letter-spacing: 6px;
+      opacity: 0;
+      animation: fadeInHoldOut 3.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    }
+
+    @keyframes fadeInHoldOut {
+      0% {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+      25% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      75% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.04);
+      }
+    }
+
+    .hide-intro {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* =========================================================
+       3. FULLSCREEN 6-BOX SPLIT SECTION
+       ========================================================= */
+    .section-one {
+      width: 100vw;
+      min-height: 100vh;
+      position: relative;
+      background: #020305;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 0;
+      overflow: hidden;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 25px;
+      z-index: 10;
+    }
+
+    .section-header h1 {
+      font-size: 2.8rem;
+      color: var(--cyber-cyan);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+    }
+
+    .section-header p {
+      font-size: 0.95rem;
+      color: var(--cyber-yellow);
+      letter-spacing: 2px;
+      margin-top: 8px;
+    }
+
+    .slanted-container {
+      display: flex;
+      width: 120vw;
+      margin-left: -10vw; /* Compensate for width expansion */
+      height: 75vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slant-panel {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      transform: skewX(calc(-1 * var(--slant-angle)));
+      border-left: 2px solid var(--cyber-cyan);
+      border-right: 2px solid var(--cyber-cyan);
+      box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.2);
+      background: #000;
+      display: block;
+      text-decoration: none;
+    }
+
+    .slant-panel:first-child {
+      border-left: none;
+    }
+
+    .slant-panel:last-child {
+      border-right: none;
+    }
+
+    /* Counter-skew image to maintain normal orientation */
+    .slant-panel .image-wrapper {
+      width: 150%;
+      height: 100%;
+      position: absolute;
+      left: -25%;
+      top: 0;
+      transform: skewX(var(--slant-angle));
+      overflow: hidden;
+    }
+
+    .slant-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), filter 0.6s ease;
+      filter: grayscale(30%) brightness(0.85);
+    }
+
+    .slant-panel:hover img {
+      transform: scale(1.15);
+      filter: grayscale(0%) brightness(1.1);
+    }
+
+    .panel-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.75);
+      padding: 6px 14px;
+      border-left: 3px solid var(--cyber-yellow);
+      color: var(--cyber-yellow);
+      font-weight: bold;
+      letter-spacing: 2px;
+      pointer-events: none;
+      white-space: nowrap;
+      font-size: clamp(0.7rem, 1.5vw, 1rem);
+      max-width: 90%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Media query adjustments for mobile screens */
+    @media (max-width: 768px) {
+      .slanted-container {
+        flex-direction: column;
+        width: 100vw;
+        margin-left: 0;
+        height: auto;
+      }
+
+      .slant-panel {
+        transform: none;
+        height: 20vh;
+        border-left: none;
+        border-right: none;
+        border-top: 1px solid var(--cyber-cyan);
+        border-bottom: 1px solid var(--cyber-cyan);
+      }
+
+      .slant-panel .image-wrapper {
+        width: 100%;
+        left: 0;
+        transform: none;
+      }
+
+      .panel-caption {
+        bottom: 12px;
+        padding: 4px 8px;
+        letter-spacing: 1px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="intro-screen">
+    <div class="intro-text">別把真心錯付</div>
+  </div>
+
+  <main>
+    <section class="section-one">
+      <div class="section-header">
+        <h1>昇辰的多重宇宙</h1>
+        <p>出世無物帶來，死也無物帶走。匆匆一生，何懼之有？</p>
+      </div>
+
+      <div class="slanted-container">
+        <!-- Box 1 -->
+        <a href="page1.html" class="slant-panel">
+          <div class="image-wrapper">
+            <img src="A1.jpg" alt="A1" onerror="this.src='https://picsum.photos/800/1000?random=1'" />
+          </div>
+          <div class="panel-caption">昇辰賦</div>
+        </a>
+
+        <!-- Box 2 -->
+        <a href="page2.html" class="slant-panel">
+          <div class="image-wrapper">
+            <img src="A2.jpg" alt="A2" onerror="this.src='https://picsum.photos/800/1000?random=2'" />
+          </div>
+          <div class="panel-caption">活動流</div>
+        </a>
+
+        <!-- Box 3 -->
+        <a href="page3.html" class="slant-panel">
+          <div class="image-wrapper">
+            <img src="A3.jpg" alt="A3" onerror="this.src='https://picsum.photos/800/1000?random=3'" />
+          </div>
+          <div class="panel-caption">無一物</div>
+        </a>
+
+        <!-- Box 4 -->
+        <a href="page4.html" class="slant-panel">
+          <div class="image-wrapper">
+            <img src="A4.jpg" alt="A4" onerror="this.src='https://picsum.photos/800/1000?random=4'" />
+          </div>
+          <div class="panel-caption">星雲界</div>
+        </a>
+
+        <!-- Box 5 -->
+        <a href="page5.html" class="slant-panel">
+          <div class="image-wrapper">
+            <img src="A5.jpg" alt="A5" onerror="this.src='https://picsum.photos/800/1000?random=5'" />
+          </div>
+          <div class="panel-caption">時空域</div>
+        </a>
+
+        <!-- Box 6 -->
+        <a href="page6.html" class="slant-panel">
+          <div class="image-wrapper">
+            <img src="A6.jpg" alt="A6" onerror="this.src='https://picsum.photos/800/1000?random=6'" />
+          </div>
+          <div class="panel-caption">終焉點</div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const bgAudio = document.getElementById('bg-audio');
+
+      // Helper function to play audio smoothly
+      const startMusic = () => {
+        bgAudio.play().catch(() => {
+          // Fallback if browser blocks un-interacted autoplay: play on the very first user interaction
+          const unlockAudio = () => {
+            bgAudio.play();
+            document.removeEventListener('click', unlockAudio);
+            document.removeEventListener('keydown', unlockAudio);
+          };
+          document.addEventListener('click', unlockAudio);
+          document.addEventListener('keydown', unlockAudio);
+        });
+      };
+
+      // Fade away intro and start music right when entering the main page
+      setTimeout(() => {
+        const intro = document.getElementById('intro-screen');
+        intro.classList.add('hide-intro');
+        startMusic();
+      }, 3200);
+    });
+  </script>
+  <!-- Background Audio -->
+  <audio id="bg-audio" src="A.mp3" loop preload="auto"></audio>
+</body>
+</html>
